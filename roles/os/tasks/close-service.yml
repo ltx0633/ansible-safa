@@ -2,7 +2,6 @@
   ansible.builtin.file:
     path: /usr/lib/systemd/system/ctrl-alt-del.target
     state: absent
-  when: ansible_distribution_major_version == "7"
   tags: safe
 
 - name: 关闭非必要服务

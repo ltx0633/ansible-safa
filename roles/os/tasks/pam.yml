@@ -22,7 +22,7 @@
     - { regexp_string: "lcredit", rule: "lcredit = -1"}
     - { regexp_string: "ocredit", rule: "ocredit = -1"}
     - { regexp_string: "ucredit", rule: "ucredit = -1"}
-  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7") 
+  # when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7") 
   tags:
   - password
   - safa
@@ -75,5 +75,6 @@
     path: "{{ item }}"
     regexp: "^password    sufficient    pam_unix.so"
     line: "password    sufficient    pam_unix.so sha512 shadow nullok try_first_pass use_authtok remember=5"
+  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
   with_items: "{{ pam_login_strategy_file }}"
   tags: safe

@@ -8,3 +8,4 @@
 - import_tasks: close-service.yml
 - import_tasks: audit.yml
 - import_tasks: no-login.yml
+- import_tasks: ntp.yml
