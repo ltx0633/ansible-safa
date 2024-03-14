@@ -1,3 +1,73 @@
 pam_login_strategy_file:
   - /etc/pam.d/password-auth
   - /etc/pam.d/system-auth
+
+close_service_list:
+  - "httpd"
+  - "postfix"
+  - "sendmail"
+  - "autofs"
+  #daytime是一种网络服务，它以服务器的当前日期和时间作为响应。该服务旨在用于调试和测试目的
+  - "daytime-dgram"
+
+no_login_user:
+  - 'tcpdump'
+  - 'postfix'
+  - 'dbus'
+  - 'lp'
+  - 'vnstat'
+  - 'chrony'
+  - 'nfsnobody'
+  - 'docker'
+  - 'nginx'
+  - 'apache'
+  - 'mysql'
+  - 'redis'
+  - 'docker'
+  - 'jenkins'
+  - 'gitlab'
+  - 'sonarqube'
+  - 'nexus'
+  - 'zookeeper'
+  - 'kafka'
+  - 'consul'
+  - 'etcd'
+  - 'prometheus'
+  - 'grafana'
+  - 'openvpn'
+  - 'tomcat'
+  - 'jetty'
+  - 'glassfish'
+  - 'wildfly'
+  - 'elasticsearch'
+  - 'kibana'
+  - 'logstash'
+  - 'fluentd'
+  - 'mongodb'
+  - 'mariadb'
+  - 'postgresql'
+  - 'cassandra'
+  - 'couchbase'
+  - 'presto'
+  - 'clickhouse'
+  - 'memsql'
+  - 'aerospike'
+  - 'neo4j'
+  - 'influxdb'
+  - 'splunk'
+  - 'graylog'
+  - 'falcon'
+  - 'ceph'
+  - 'glusterfs'
+  - 'abrt'
+  - 'ntp'
+
+file_permission_list:
+  - { path: "/etc/passwd" , owner: "root" , group: "root" , mode: "0644" }
+  - { path: "/etc/passwd-" , owner: "root" , group: "root" , mode: "0644" }
+  - { path: "/etc/group" , owner: "root" , group: "root" , mode: "0644" }
+  - { path: "/etc/group-" , owner: "root" , group: "root" , mode: "0644" }
+  - { path: "/etc/shadow" , owner: "root" , group: "root" , mode: "0000" }
+  - { path: "/etc/shadow-" , owner: "root" , group: "root" , mode: "0000" }
+  - { path: "/etc/gshadow" , owner: "root" , group: "root" , mode: "0000" }
+  - { path: "/boot/grub2/grub.cfg" , owner: "root" , group: "root" , mode: "0600" }

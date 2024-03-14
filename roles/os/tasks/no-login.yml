@@ -1,0 +1,11 @@
+#TODO 如果不存在则不创建
+- name: 禁止部分用户登陆
+  ansible.builtin.user:
+    name: "{{ item }}"
+    shell: /sbin/nologin
+    password: '!'
+  with_items: "{{ no_login_user }}"
+  when: (ansible_facts['distribution'] == "CentOS") 
+  tags: 
+  - safa
+  - no-login

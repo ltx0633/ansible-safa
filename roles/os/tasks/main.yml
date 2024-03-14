@@ -5,3 +5,6 @@
 - import_tasks: update-password.yml
 - import_tasks: sshd.yml
 - import_tasks: pam.yml
+- import_tasks: close-service.yml
+- import_tasks: audit.yml
+- import_tasks: no-login.yml

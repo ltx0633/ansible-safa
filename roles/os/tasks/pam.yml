@@ -6,7 +6,9 @@
   with_items: 
   -  '/etc/profile' 
   -  '/etc/bashrc' 
-  tags: umask
+  tags: 
+  - umask
+  - safa
 
 - name: 密码强度  
   #优先级低于pam中pam_pwquality.so
@@ -21,7 +23,9 @@
     - { regexp_string: "ocredit", rule: "ocredit = -1"}
     - { regexp_string: "ucredit", rule: "ucredit = -1"}
   when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7") 
-  tags: password
+  tags:
+  - password
+  - safa
 
 - name: pam配置密码强度
   ansible.builtin.lineinfile: 
@@ -32,7 +36,9 @@
  
   with_items: "{{ pam_login_strategy_file }}"
   when: ansible_distribution_major_version == "7"
-  tags: pam_pwquality
+  tags: 
+  - pam_pwquality
+  - safa
 
 
 - name: 登陆失败策略
@@ -59,7 +65,9 @@
     - 'auth required pam_faillock.so preauth audit silent deny=5 unlock_time=900'
 
   when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7") 
-  tags: login
+  tags: 
+  - login
+  - saga
 
 
 - name: 禁止重复使用旧密码
