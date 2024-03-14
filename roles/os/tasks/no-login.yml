@@ -1,11 +1,25 @@
-#TODO 如果不存在则不创建
+- name: 获取存在的用户
+  ansible.builtin.shell:
+    cmd: "getent passwd {{ item }}"
+  register: user_info
+  ignore_errors: true
+
+  with_items: "{{ no_login_user }}"
+  tags:
+    - safa
+    - no-login
+    - user
+
 - name: 禁止部分用户登陆
   ansible.builtin.user:
     name: "{{ item }}"
     shell: /sbin/nologin
     password: '!'
-  with_items: "{{ no_login_user }}"
-  when: (ansible_facts['distribution'] == "CentOS") 
-  tags: 
-  - safa
-  - no-login
+  loop: "{{ no_login_user }}"
+  when: user_info.results[item_index].rc == 0
+  loop_control:
+    index_var: item_index
+  tags:
+    - safa
+    - no-login
+    - user
