@@ -1,0 +1,2 @@
+[vmwarm]
+192.168.10.31 ansible_user=ltx ansible_password='echo1'  ansible_sudo_pass='echo1'
