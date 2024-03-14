@@ -1,0 +1,3 @@
+pam_login_strategy_file:
+  - /etc/pam.d/password-auth
+  - /etc/pam.d/system-auth

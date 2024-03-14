@@ -1,0 +1,15 @@
+- name: 修改关键文件权限
+  ansible.builtin.file: 
+    path: "{{ item.path }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items: 
+  - { path: "/etc/passwd" , owner: "root" , group: "root" , mode: "0644" }
+  - { path: "/etc/passwd-" , owner: "root" , group: "root" , mode: "0644" }
+  - { path: "/etc/group" , owner: "root" , group: "root" , mode: "0644" }
+  - { path: "/etc/group-" , owner: "root" , group: "root" , mode: "0644" }
+  - { path: "/etc/shadow" , owner: "root" , group: "root" , mode: "0000" }
+  - { path: "/etc/shadow-" , owner: "root" , group: "root" , mode: "0000" }
+  - { path: "/etc/gshadow" , owner: "root" , group: "root" , mode: "0000" }
+  tags: file-permission

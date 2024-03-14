@@ -1,0 +1,5 @@
+.history
+.vscode
+venv
+artifacts
+env

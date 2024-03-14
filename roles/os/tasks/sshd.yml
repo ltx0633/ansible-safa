@@ -1,0 +1,19 @@
+- name: set sshd_config
+  ansible.builtin.replace: path=/etc/ssh/sshd_config regexp={{ item.regexp }} replace={{ item.replace }}
+  with_items:
+    # - { regexp: "#Port 22", replace: "Port 10022" }
+    # 禁止解析远程主机名
+    - { regexp: "#UseDNS yes", replace: "UseDNS no" }
+    #禁止root登录
+    - { regexp: "#PermitRootLogin yes", replace: "PermitRootLogin no" }
+    #指定是否允许基于GSSAPI 的用户身份验证
+    - { regexp: "GSSAPIAuthentication yes", replace: "GSSAPIAuthentication no" }
+    #当允许密码验证时，指定服务器是否允许使用空密码字符串的帐户登录
+    - { regexp: "#PermitEmptyPasswords no", replace: "PermitEmptyPasswords no" }
+    #指定每个连接允许的最大身份验证尝试次数。一旦失败次数达到该值的一半，就会记录更多失败。默认值为 6
+    - { regexp: "#MaxAuthTries 6", replace: "MaxAuthTries 4" }
+    #如果用户未成功登录，则在此时间后服务器将断开连接。如果值为 0，则没有时间限制。默认值为 120 秒。
+    - { regexp: "#LoginGraceTime 2m", replace: "LoginGraceTime 60" }
+    - { regexp: "#LogLevel INFO", replace: "LogLevel INFO" }
+  notify: restart sshd
+  tags: sshd

@@ -1,0 +1,71 @@
+- name: umask
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: 'umask(\s+)(\d+)'
+    replace: ' umask 027 ' 
+  with_items: 
+  -  '/etc/profile' 
+  -  '/etc/bashrc' 
+  tags: umask
+
+- name: 密码强度  
+  #优先级低于pam中pam_pwquality.so
+  ansible.builtin.lineinfile:
+    path: /etc/security/pwquality.conf
+    regexp: "{{ item.regexp_string }}"
+    line: "{{ item.rule }}"
+  with_items:
+    - { regexp_string: "minlen", rule: "minlen = 8"}
+    - { regexp_string: "dcredit", rule: "dcredit = -1"}
+    - { regexp_string: "lcredit", rule: "lcredit = -1"}
+    - { regexp_string: "ocredit", rule: "ocredit = -1"}
+    - { regexp_string: "ucredit", rule: "ucredit = -1"}
+  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7") 
+  tags: password
+
+- name: pam配置密码强度
+  ansible.builtin.lineinfile: 
+    path:  '{{ item }}'
+    regexp: "^password    requisite     pam_pwquality.so"
+    #用户提供密码后，进行密码质量检查，如果密码不符合指定的质量要求，则拒绝密码认证
+    line: "password    requisite     pam_pwquality.so try_first_pass retry=3"
+ 
+  with_items: "{{ pam_login_strategy_file }}"
+  when: ansible_distribution_major_version == "7"
+  tags: pam_pwquality
+
+
+- name: 登陆失败策略
+  ansible.builtin.lineinfile: 
+    path: "{{ item.0 }}"
+    insertafter: "^#"
+    line: "{{ item.1 }}"
+  
+  loop: "{{ file|product(data)|list }}"
+  vars:
+    file: "{{ pam_login_strategy_file }}"
+    data:
+    #此处为倒序。由上至下插入，第一行会做在文件中变为插入内容的最后一行。pam_faillock应按照严格顺序匹配！请勿修改此顺序！
+
+    #当用户成功认证时，会检查账户是否已被锁定。如果账户已锁定，则不会执行后续的认证规则，直接认定为认证失败。
+    - 'auth sufficient pam_faillock.so authsucc audit deny=5 unlock_time=900'
+    
+    #指定了账号锁定模块 pam_faillock 的 auth 阶段。authfail 表示只有在认证失败时才会触发账号锁定，audit 表示记录认证事件到系统日志中，deny=5 表示连续失败 5 次认证将会触发锁定账号，unlock_time=900 表示锁定的账号将会在 900 秒（15 分钟）后自动解锁。
+    - 'auth [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900'
+    
+    #如果认证成功，跳转到下一个标号为 1 的条目
+    - 'auth [success=1 default=bad] pam_unix.so'
+    
+    - 'auth required pam_faillock.so preauth audit silent deny=5 unlock_time=900'
+
+  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7") 
+  tags: login
+
+
+- name: 禁止重复使用旧密码
+  lineinfile:
+    path: "{{ item }}"
+    regexp: "^password    sufficient    pam_unix.so"
+    line: "password    sufficient    pam_unix.so sha512 shadow nullok try_first_pass use_authtok remember=5"
+  with_items: "{{ pam_login_strategy_file }}"
+  tags: safe

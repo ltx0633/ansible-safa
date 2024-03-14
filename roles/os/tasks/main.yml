@@ -1,0 +1,7 @@
+#在此include所有的tasks。方便后续调用,此文件会被ansible优先读取，并将include加入play中
+#https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_reuse_roles.html
+- import_tasks: file-permission.yml
+- import_tasks: profile.yml
+- import_tasks: update-password.yml
+- import_tasks: sshd.yml
+- import_tasks: pam.yml

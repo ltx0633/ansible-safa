@@ -1,0 +1,13 @@
+# 修改profile变量
+- name:  增强profile
+  ansible.builtin.lineinfile:
+    path: /etc/profile
+    line: "{{ item }}"
+  with_items:
+    - "readonly TMOUT=1800"
+    - 'export HISTTIMEFORMAT="%F %T # "'
+    - "export HISTSIZE=10240"
+    #记录用户的历史命令，并将其写入系统日志中
+    - "export PROMPT_COMMAND=\\'{ msg=$(history 1 | { read x y; echo $y; });logger -p local3.notice \"[euid=$(whoami)]\":$(who am i):[`pwd`]\"$msg\"; }\\'"
+    - 'readonly PROMPT_COMMAND'
+  tags: profile
