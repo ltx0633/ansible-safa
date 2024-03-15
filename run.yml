@@ -3,4 +3,7 @@
   gather_facts: yes
   remote_user: root
   roles: 
-  - os
+  - role: os
+    tags: os
+  - role: soft-install
+    tags: soft-install

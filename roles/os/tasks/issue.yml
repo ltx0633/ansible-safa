@@ -1,0 +1,55 @@
+- name: 登陆提示
+  ansible.builtin.template:
+    src: issus.conf.j2
+    dest:  "{{ item }}"
+    backup:  true
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:  "{{ welcome_message_file }}"
+  tags:
+  - safa
+  - welcome-message
+
+
+- name: 登陆提示
+  ansible.builtin.template:
+    src: issus.conf.j2
+    dest:  "{{ item }}"
+    backup:  true
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:  "{{ welcome_message_file }}"
+  tags:
+  - safa
+  - welcome-message
+
+
+- name: 禁止motd-news
+  ansible.builtin.find:
+    path: /etc/update-motd.d
+    follow: true
+    file_type: "any"
+    recurse: true
+  register: motd_files
+  when: (ansible_facts['distribution'] == "Ubuntu")
+  tags:
+  - safa
+  - welcome-message
+
+# 禁止motd执行
+- name: 禁止motd-news1
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    mode: u=rw,g=r,o=r
+    owner: root
+    group: root
+  
+  loop: "{{ motd_files.files }}"
+  when: (ansible_facts['distribution'] == "Ubuntu")
+  tags:
+  - safa
+  - welcome-message
+
+

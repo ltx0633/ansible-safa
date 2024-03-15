@@ -1,0 +1,12 @@
+- name: 增加rsyslog 配置
+  ansible.builtin.lineinfile:
+    path: '/etc/rsyslog.conf'
+    regexp: '{{ item.regexp_string }}'
+    line: '{{ item.rule }}'
+    insertafter: 'cron.* /var/log/cron'
+  with_items: "{{ syslog_data }}"
+  tags:
+  - rsyslog
+  - safa
+  notify: restart rsyslog
+

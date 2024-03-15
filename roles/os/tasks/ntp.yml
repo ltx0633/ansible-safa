@@ -1,16 +1,25 @@
-- name: Install ntpdate -- ubuntu
-  ansible.builtin.apt:
-    pkg: ntpdate
-  when: (ansible_facts['distribution'] == "Ubuntu") 
-  tags: ntp
+- name: Install ntpdate
+  ansible.builtin.package:
+    name:
+      - ntpdate
+      - util-linux #提供hwclock
+    state: present
 
-- name: Install ntpdate -- centos
-  ansible.builtin.yum:
-    pkg: ntpdate
-  when: (ansible_facts['distribution'] == "CentOS") 
-  tags: ntp
+- name: Install cron
+  ansible.builtin.package:
+    pkg: { item.pkg }
+  when: (ansible_facts['distribution'] == "Ubuntu")
+  loop: 
+  - { pkg: "cron" ,  distros: ['CentOS'] }
+  - { pkg: "cronie" ,distros: ['Ubuntu'] }
+  tags:
+  - ntp
+  
 
-#TODO hwclock ubuntu默认没有
 - name: set ntp
-  cron: name="time sync for ntp" job="/usr/sbin/ntpdate ntp.aliyun.com && /sbin/hwclock -w" hour="*" state=present
+  ansible.builtin.cron:
+    name: "time sync for ntp"
+    job: "/usr/sbin/ntpdate ntp.aliyun.com && /sbin/hwclock -w"
+    hour: "*"
+    state: present
   tags: ntp

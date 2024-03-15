@@ -6,8 +6,25 @@
   with_items:
     - "readonly TMOUT=1800"
     - 'export HISTTIMEFORMAT="%F %T # "'
-    - "export HISTSIZE=10240"
+    - "export HISTSIZE=1024"
     #记录用户的历史命令，并将其写入系统日志中
-    - "export PROMPT_COMMAND=\\'{ msg=$(history 1 | { read x y; echo $y; });logger -p local3.notice \"[euid=$(whoami)]\":$(who am i):[`pwd`]\"$msg\"; }\\'"
+    - export PROMPT_COMMAND='{ msg=$(history 1 | { read x y; echo $y; });logger -p local3.notice \"[euid=$(whoami)]\":$(who am i):[`pwd`]\"$msg\"; }'
     - 'readonly PROMPT_COMMAND'
-  tags: profile
+    - 'umask 027'
+  tags: 
+  - profile
+  - safa
+
+- name: umask
+  ansible.builtin.replace:
+    path: "{{ item.path }}"
+    regexp: 'umask(\s+)(\d+)'
+    replace: ' umask 027 ' 
+  loop:
+  - { path: '/etc/profile', distros: ['Ubuntu', 'CentOS'] }
+  - { path: '/etc/bashrc', distros: ['CentOS'] }
+  - { path: '/etc/bash.bashrc', distros: ['Ubuntu'] }
+  when: ansible_facts['distribution']  in item.distros
+  tags: 
+  - umask
+  - safa

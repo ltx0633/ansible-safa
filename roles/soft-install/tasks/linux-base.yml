@@ -1,0 +1,23 @@
+- name: Install cron -- Ubuntu
+  ansible.builtin.yum:
+    pkg: cron
+  when: (ansible_facts['distribution'] == "Ubuntu")
+  tags: 
+  - cron
+  - base-install
+  
+- name:  Install cron -- CentOS
+  ansible.builtin.yum:
+    pkg: cronie
+  when: (ansible_facts['distribution'] == "CentOS")
+  tags: 
+  - cron
+  - base-install
+  
+- name: Install util-linux for Ubuntu
+  ansible.builtin.apt:
+    pkg: util-linux
+  when: (ansible_facts['distribution'] == "Ubuntu")
+  tags: 
+  - tools
+  - base-install

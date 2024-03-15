@@ -1,14 +1,15 @@
-- name: umask
-  ansible.builtin.replace:
-    path: "{{ item }}"
-    regexp: 'umask(\s+)(\d+)'
-    replace: ' umask 027 ' 
-  with_items: 
-  -  '/etc/profile' 
-  -  '/etc/bashrc' 
-  tags: 
-  - umask
-  - safa
+- name: 密码过期策略
+  ansible.builtin.lineinfile:
+    path: /etc/login.defs
+    regexp: "{{ item.regexp_string }}"
+    line: "{{ item.rule }}"
+  with_items:
+    - { regexp_string: "^PASS_MAX_DAYS", rule: "PASS_MAX_DAYS   180"}
+    - { regexp_string: "^PASS_MIN_DAYS", rule: "PASS_MIN_DAYS   0"}
+    - { regexp_string: "^PASS_MIN_LEN", rule: "PASS_MIN_LEN   8"}
+    - { regexp_string: "^PASS_WARN_AGE", rule: "PASS_WARN_AGE   5"}
+  tags: safe
+
 
 - name: 密码强度  
   #优先级低于pam中pam_pwquality.so
@@ -22,7 +23,6 @@
     - { regexp_string: "lcredit", rule: "lcredit = -1"}
     - { regexp_string: "ocredit", rule: "ocredit = -1"}
     - { regexp_string: "ucredit", rule: "ucredit = -1"}
-  # when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7") 
   tags:
   - password
   - safa
@@ -71,7 +71,7 @@
 
 
 - name: 禁止重复使用旧密码
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ item }}"
     regexp: "^password    sufficient    pam_unix.so"
     line: "password    sufficient    pam_unix.so sha512 shadow nullok try_first_pass use_authtok remember=5"

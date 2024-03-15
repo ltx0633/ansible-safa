@@ -1,0 +1,4 @@
+- name: change limits
+  ansible.builtin.lineinfile: path=/etc/security/limits.conf line={{ item }}
+  with_items: "{{ limit_list }}"
+  tags: limits

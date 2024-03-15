@@ -16,4 +16,10 @@
     - { regexp: "#LoginGraceTime 2m", replace: "LoginGraceTime 60" }
     - { regexp: "#LogLevel INFO", replace: "LogLevel INFO" }
   notify: restart sshd
-  tags: sshd
+  tags: 
+  - sshd
+  - safa
+  
+
+
+ 
