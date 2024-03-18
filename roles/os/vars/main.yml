@@ -35,7 +35,9 @@ close_service_list:
   #daytime是一种网络服务，它以服务器的当前日期和时间作为响应。该服务旨在用于调试和测试目的
   - "daytime-dgram"
 
-no_login_user:
+deny_login_user:
+  - 'www'
+  - 'service'
   - 'tcpdump'
   - 'postfix'
   - 'dbus'

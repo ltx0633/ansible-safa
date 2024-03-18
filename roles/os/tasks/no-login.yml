@@ -2,9 +2,9 @@
   ansible.builtin.shell:
     cmd: "getent passwd {{ item }}"
   register: user_info
+  no_log: true
   ignore_errors: true
-
-  with_items: "{{ no_login_user }}"
+  with_items: "{{ deny_login_user }}"
   tags:
     - safa
     - no-login
@@ -15,7 +15,7 @@
     name: "{{ item }}"
     shell: /sbin/nologin
     password: '!'
-  loop: "{{ no_login_user }}"
+  loop: "{{ deny_login_user }}"
   when: user_info.results[item_index].rc == 0
   loop_control:
     index_var: item_index
