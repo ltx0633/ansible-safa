@@ -100,3 +100,10 @@ file_permission_list:
   - { path: "/etc/shadow-" , owner: "root" , group: "root" , mode: "0000" }
   - { path: "/etc/gshadow" , owner: "root" , group: "root" , mode: "0000" }
   - { path: "/boot/grub2/grub.cfg" , owner: "root" , group: "root" , mode: "0600" }
+
+
+#是否修改root密码
+root_change_password: false
+
+#是否允许root登录
+permit_root_login: yes

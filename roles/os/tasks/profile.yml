@@ -8,8 +8,8 @@
     - 'export HISTTIMEFORMAT="%F %T # "'
     - "export HISTSIZE=1024"
     #记录用户的历史命令，并将其写入系统日志中
-    - export PROMPT_COMMAND='{ msg=$(history 1 | { read x y; echo $y; });logger -p local3.notice \"[euid=$(whoami)]\":$(who am i):[`pwd`]\"$msg\"; }'
-    - 'readonly PROMPT_COMMAND'
+    # - export PROMPT_COMMAND='{ msg=$(history 1 | { read x y; echo $y; });logger -p local3.notice \"[euid=$(whoami)]\":$(who am i):[`pwd`]\"$msg\"; }'
+    # - 'readonly PROMPT_COMMAND'
     - 'umask 027'
   tags: 
   - profile
